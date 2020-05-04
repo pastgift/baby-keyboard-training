@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>打字练习</title>
+</head>
+
+<style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  #container {
+    background-color: lightblue;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .content {
+    font-size: 300px;
+    font-weight: bold;
+    font-family: sans-serif;
+    text-shadow: 3px -3px 1px #fff;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .shake {
+    animation: shake 2s infinite;
+  }
+  @keyframes shake {
+    from {
+      left: 100px;
+    }
+    50% {
+      left: -100px;
+    }
+    to {
+      left: 100px;
+    }
+  }
+</style>
+
+<body>
+  <div id="container">
+    <span id="key" class="content"></span>
+  </div>
+</body>
+
+<script type="text/javascript">
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const NUNBER   = '0123456789';
+const EMOJI    = ['😀', '😃', '😄', '🤪',
+        '🌼', '🌻', '🌸', '❄️',
+        '🥦', '🥬', '🥕',
+        '🥐', '🥖', '🍞', '🌭', '🍜', '🥟', '🍤',
+        '', '🚩', '🇨🇳', '💮', '💯',
+        '🚗', '🚕', '🚙', '🚌', '🚎', '🏎', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛺',
+        '🛴', '🛵', '🏍',
+        '🚘', '🚖', '🚔', '🚍',
+        '🚟', '🚃', '🚋', '🚝', '🚄', '🚅',
+        '✈️', '🛩', '🚁',
+        '🛳', '⛴', '🚢'];
+
+const $key = document.getElementById('key');
+
+const genRandomChar = (chars) => {
+  let i = parseInt(Math.random() * chars.length);
+  return chars[i];
+}
+
+let targetKey = '';
+
+window.addEventListener('keypress', ev => {
+  if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
+    $key.innerHTML = genRandomChar(EMOJI);
+    $key.classList.add('shake');
+    setTimeout(() => {
+      $key.innerHTML = targetKey = genRandomChar(ALPHABET);
+      $key.classList.remove('shake');
+    }, 3000);
+  }
+});
+
+$key.innerHTML = targetKey = genRandomChar(ALPHABET);
+</script>
+</html>
