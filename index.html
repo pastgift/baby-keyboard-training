@@ -6,12 +6,13 @@
 </head>
 
 <style type="text/css">
-  * {
-    font-family: "Noto Color Emoji", "Twitter Color Emoji", sans-serif;
-  }
   body {
     margin: 0;
     padding: 0;
+  }
+  .emoji {
+    font-family: "Noto Color Emoji", "Twitter Color Emoji", sans-serif;
+    letter-spacing: 10px;
   }
   #container {
     background-color: lightblue;
@@ -60,9 +61,9 @@
 
 <body>
   <div id="container">
-    <span id="key" class="key"></span>
+    <span id="key" class="emoji"></span>
     <div id="collection-container">
-      <span id="collection"></span>
+      <span id="collection" class="emoji"></span>
     </div>
   </div>
 </body>
