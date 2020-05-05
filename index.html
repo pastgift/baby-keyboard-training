@@ -52,9 +52,30 @@
 </body>
 
 <script type="text/javascript">
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
-const NUNBER   = '0123456789';
-const EMOJI    = ['😀', '😃', '😄',
+const WORDS = [
+  'the', 'be', 'to', 'of', 'and',
+  'a', 'in', 'that', 'have', 'I',
+  'it', 'for', 'not', 'on', 'with',
+  'he', 'as', 'you', 'do', 'at',
+  'this', 'but', 'his', 'by', 'from',
+  'they', 'we', 'say', 'her', 'she',
+  'or', 'an', 'will', 'my', 'one',
+  'all', 'would', 'there', 'their', 'what',
+  'so', 'up', 'out', 'if', 'about',
+  'who', 'get', 'which', 'go', 'me',
+  'when', 'make', 'can', 'like', 'time',
+  'no', 'just', 'him', 'know', 'take',
+  'person', 'into', 'year', 'your', 'good',
+  'some', 'could', 'them', 'see', 'other',
+  'than', 'then', 'now', 'look', 'only',
+  'come', 'its', 'over', 'think', 'also',
+  'back', 'after', 'use', 'two', 'how',
+  'our', 'work', 'first', 'well', 'way',
+  'even', 'new', 'want', 'because', 'any',
+  'these', 'give', 'day', 'most', 'us',
+];
+const CHARS = WORDS.join('').toLowerCase();
+const EMOJI = ['😀', '😃', '😄',
         '🌼', '🌻', '🌸', '❄️', '🥕',
         '🥐', '🥖', '🍞', '🌭', '🍜', '🍤',
         '🚩', '🇨🇳', '💮', '💯',
@@ -65,16 +86,27 @@ const EMOJI    = ['😀', '😃', '😄',
         '✈️', '🛩', '🚁',
         '🛳', '⛴', '🚢'];
 
-const $key = document.getElementById('key');
-
 const genRandomChar = (chars) => {
   let i = parseInt(Math.random() * chars.length);
   return chars[i];
 }
 
-let targetKey = '';
+let charIndex = -1;
+const getNextChar = (chars) => {
+  charIndex++;
+  return chars[charIndex % chars.length];
+}
 
+const $key = document.getElementById('key');
+let targetKey = null;
+let isBusy = false;
 window.addEventListener('keypress', ev => {
+  if (isBusy) {
+    return;
+  } else {
+    isBusy = true;
+  }
+
   console.log(ev.key)
 
   $key.classList.remove('debug');
@@ -82,20 +114,27 @@ window.addEventListener('keypress', ev => {
     $key.innerHTML = EMOJI.join(' ');
     $key.classList.add('debug');
 
-    return;
-  }
+    isBusy = false;
 
-  if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
-    $key.innerHTML = genRandomChar(EMOJI);
-    $key.classList.add('shake');
+  } else {
+    if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
+      $key.innerHTML = genRandomChar(EMOJI);
+      $key.classList.add('shake');
 
-    setTimeout(() => {
-      $key.innerHTML = targetKey = genRandomChar(ALPHABET);
-      $key.classList.remove('shake');
-    }, 3000);
+      setTimeout(() => {
+        $key.innerHTML = targetKey = getNextChar(CHARS);
+        $key.classList.remove('shake');
+
+        isBusy = false;
+
+      }, 3000);
+
+    } else {
+      isBusy = false;
+    }
   }
 });
 
-$key.innerHTML = targetKey = genRandomChar(ALPHABET);
+$key.innerHTML = targetKey = getNextChar(CHARS);
 </script>
 </html>
