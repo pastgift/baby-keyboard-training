@@ -21,10 +21,13 @@
   .content {
     font-size: 200px;
     font-weight: bold;
-    font-family: "Twitter Color Emoji", sans-serif;
+    font-family: sans-serif;
     text-shadow: 3px -3px 1px #fff;
     text-transform: uppercase;
     position: relative;
+  }
+  .debug {
+    font-size: 50px !important;
   }
   .shake {
     animation: shake 2s infinite;
@@ -72,9 +75,20 @@ const genRandomChar = (chars) => {
 let targetKey = '';
 
 window.addEventListener('keypress', ev => {
+  console.log(ev.key)
+
+  $key.classList.remove('debug');
+  if (ev.key === '`') {
+    $key.innerHTML = EMOJI.join(' ');
+    $key.classList.add('debug');
+
+    return;
+  }
+
   if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
     $key.innerHTML = genRandomChar(EMOJI);
     $key.classList.add('shake');
+
     setTimeout(() => {
       $key.innerHTML = targetKey = genRandomChar(ALPHABET);
       $key.classList.remove('shake');
