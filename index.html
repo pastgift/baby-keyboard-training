@@ -19,13 +19,24 @@
     justify-content: center;
     align-items: center;
   }
-  .content {
+  #key {
     font-size: 300px;
     font-weight: bold;
     font-family: "Noto Color Emoji", "Twitter Color Emoji", sans-serif;
     text-shadow: 3px -3px 1px #fff;
-    text-transform: uppercase;
     position: relative;
+  }
+  #collection-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    padding: 0 30px;
+  }
+  #collection {
+    font-size: 50px;
   }
   .debug {
     font-size: 40px !important;
@@ -48,11 +59,18 @@
 
 <body>
   <div id="container">
-    <span id="key" class="content"></span>
+    <span id="key" class="key"></span>
+    <div id="collection-container">
+      <span id="collection"></span>
+    </div>
   </div>
 </body>
 
 <script type="text/javascript">
+const $key = document.getElementById('key');
+const $collection = document.getElementById('collection');
+const $collectionContainer = document.getElementById('collection-container');
+
 const WORDS = [
   'abcdefg',
   'the', 'be', 'to', 'of', 'and',
@@ -115,7 +133,19 @@ const getNextChar = (chars) => {
   return chars[charIndex % chars.length];
 }
 
-const $key = document.getElementById('key');
+const showChar = (char) => {
+  $key.innerHTML = `${char.toUpperCase()} ${char.toLowerCase()}`;
+  $key.classList.remove('shake');
+}
+
+const addToCollection = (emoji) => {
+  $collection.innerHTML += ` ${emoji}`;
+}
+
+const scrollCollection = () => {
+  $collectionContainer.scrollLeft = $collectionContainer.scrollWidth
+}
+
 let targetKey = null;
 let isBusy = false;
 window.addEventListener('keypress', ev => {
@@ -136,12 +166,16 @@ window.addEventListener('keypress', ev => {
 
   } else {
     if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
-      $key.innerHTML = genRandomChar(EMOJI);
+      let emoji = genRandomChar(EMOJI);
+
+      $key.innerHTML = emoji;
       $key.classList.add('shake');
 
       setTimeout(() => {
-        $key.innerHTML = targetKey = getNextChar(CHARS);
-        $key.classList.remove('shake');
+        targetKey = getNextChar(CHARS);
+        showChar(targetKey);
+        addToCollection(emoji);
+        scrollCollection();
 
         isBusy = false;
 
@@ -153,6 +187,7 @@ window.addEventListener('keypress', ev => {
   }
 });
 
-$key.innerHTML = targetKey = getNextChar(CHARS);
+targetKey = getNextChar(CHARS);
+showChar(targetKey);
 </script>
 </html>
