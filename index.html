@@ -74,6 +74,7 @@
     </div>
     <div id="count-up">0</div>
   </div>
+  <audio id="sound" src="" autoplay>
 </body>
 
 <script type="text/javascript">
@@ -81,6 +82,7 @@ const $key = document.getElementById('key');
 const $collection = document.getElementById('collection');
 const $collectionContainer = document.getElementById('collection-container');
 const $countUp = document.getElementById('count-up');
+const $sound = document.getElementById('sound');
 
 const WORDS = [
   'abcdefg',
@@ -147,6 +149,7 @@ const getNextChar = (chars) => {
 const showChar = (char) => {
   $key.innerHTML = `${char.toUpperCase()}${char.toLowerCase()}`;
   $key.classList.remove('shake');
+  $sound.src = `sound/${char.toLowerCase()}.m4a`;
 }
 
 const addToCollection = (emoji) => {
