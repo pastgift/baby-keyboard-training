@@ -42,6 +42,11 @@
   #collection {
     font-size: 50px;
   }
+  #count-up {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+  }
   .debug {
     font-size: 40px !important;
   }
@@ -67,6 +72,7 @@
     <div id="collection-container">
       <span id="collection" class="emoji"></span>
     </div>
+    <div id="count-up">0</div>
   </div>
 </body>
 
@@ -74,6 +80,7 @@
 const $key = document.getElementById('key');
 const $collection = document.getElementById('collection');
 const $collectionContainer = document.getElementById('collection-container');
+const $countUp = document.getElementById('count-up');
 
 const WORDS = [
   'abcdefg',
@@ -150,8 +157,13 @@ const scrollCollection = () => {
   $collectionContainer.scrollLeft = $collectionContainer.scrollWidth
 }
 
+const updateCountUp = (count) => {
+  $countUp.innerHTML = `${count}`;
+}
+
 let targetKey = null;
 let isBusy = false;
+let correctCount = 0;
 window.addEventListener('keypress', ev => {
   if (isBusy) {
     return;
@@ -177,9 +189,12 @@ window.addEventListener('keypress', ev => {
 
       setTimeout(() => {
         targetKey = getNextChar(CHARS);
+        correctCount++;
+
         showChar(targetKey);
         addToCollection(emoji);
         scrollCollection();
+        updateCountUp(correctCount);
 
         isBusy = false;
 
