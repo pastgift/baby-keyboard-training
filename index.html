@@ -10,9 +10,12 @@
     margin: 0;
     padding: 0;
   }
-  .emoji {
-    font-family: "Noto Color Emoji", "Twitter Color Emoji", sans-serif;
+  .main-element {
+    font-family: sans-serif;
     letter-spacing: 10px;
+  }
+  .main-element > img {
+    width: 280px;
   }
   #container {
     background-image: radial-gradient(#cce4ec, #6ba0b1);
@@ -30,25 +33,10 @@
     position: relative;
     letter-spacing: 20px;
   }
-  #collection-container {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    width: 90%;
-    overflow: hidden;
-    white-space: nowrap;
-    scroll-behavior: smooth;
-  }
-  #collection {
-    font-size: 50px;
-  }
   #count-up {
     position: fixed;
     right: 10px;
     top: 10px;
-  }
-  .debug {
-    font-size: 40px !important;
   }
   .shake {
     animation: shake 2s infinite;
@@ -68,10 +56,7 @@
 
 <body>
   <div id="container">
-    <span id="key" class="emoji"></span>
-    <div id="collection-container">
-      <span id="collection" class="emoji"></span>
-    </div>
+    <span id="key" class="main-element"></span>
     <div id="count-up">0</div>
   </div>
   <audio id="sound" src="" autoplay>
@@ -79,8 +64,6 @@
 
 <script type="text/javascript">
 const $key = document.getElementById('key');
-const $collection = document.getElementById('collection');
-const $collectionContainer = document.getElementById('collection-container');
 const $countUp = document.getElementById('count-up');
 const $sound = document.getElementById('sound');
 
@@ -111,33 +94,18 @@ const WORDS = [
   'these', 'give', 'day', 'most', 'us',
 ];
 const CHARS = WORDS.join('').toLowerCase();
-const EMOJI = [
-  '😀', '😃', '😄', '😁', '😆', '🤣', '😘', '😛', '😜',
-  '🥳', '🤡', '🎃', '👨‍👩‍👦',
-  '👞', '👟', '🥾', '🧦', '🎒', '👓',
-  '🐣', '🐥', '🦆', '🦉', '🐢', '🦎', '🦖', '🦕', '🐙', '🦀', '🦞',
-  '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊',
-  '🐅', '🐆', '🦓', '🐘', '🐂', '🐄', '🐖', '🐏', '🐎',
-  '🐑', '🐈', '🐕', '🐓', '🦢', '🦜', '🦩', '🦝', '🕊', '🐇',
-  '🎄', '🌿', '☘️', '🍀', '🐚', '🌾', '🌹', '🌼', '🌻', '🌸',
-  '☀️', '🌤', '🌧', '🌦', '❄️', '☃️', '☔️',
-  '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍑', '🍍', '🥥', '🍅', '🥦', '🥬', '🌽', '🥕',
-  '🥐', '🥖', '🍞', '🌭', '🍜', '🍤', '🍝', '🥄', '🥣',
-  '⚽️', '🏀', '🏐', '🎮', '🚩', '🇨🇳', '💮', '💯',
-  '🚗', '🚕', '🚙', '🚌', '🚎', '🏎', '🚓', '🚑', '🚒', '🚐', '🚚', '🚜', '🛺',
-  '🛴', '🛵', '🏍',
-  '🚘', '🚖', '🚔', '🚍',
-  '🚟', '🚃', '🚋', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉',
-  '✈️', '🛩', '🚁', '🛫', '🛬', '🚀',
-  '🛳', '⛴', '🚢', '🚤', '🛥', '⛵️',
-  '🏰', '🏠', '🏡', '🏘', '🏗', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🏩', '💒', '⛪️',
-  '🎑', '🏞', '🌅', '🌠', '🎇', '🎆', '🌇', '🌆', '🏙', '🌃', '🌌', '🌉', '🌁',
-  '📱', '💻', '⌨️', '🖥', '⏰', '🚽', '🧻', '🚰', '🧼', '🧴', '🚪', '🪑', '🧸', '📕', '📚',
-];
+const EMOJI = [];
+for (let i = 1; i <= 40; i++) {
+  if (i < 10) {
+    EMOJI.push(`0${i}`);
+  } else {
+    EMOJI.push(`${i}`);
+  }
+}
 
-const genRandomChar = (chars) => {
-  let i = parseInt(Math.random() * chars.length);
-  return chars[i];
+const genRandomElement = (elements) => {
+  let i = parseInt(Math.random() * elements.length);
+  return elements[i];
 }
 
 let charIndex = -1;
@@ -150,14 +118,6 @@ const showChar = (char) => {
   $key.innerHTML = `${char.toUpperCase()}${char.toLowerCase()}`;
   $key.classList.remove('shake');
   // $sound.src = `sound/${char.toLowerCase()}.m4a`;
-}
-
-const addToCollection = (emoji) => {
-  $collection.innerHTML += ` ${emoji}`;
-}
-
-const scrollCollection = () => {
-  $collectionContainer.scrollLeft = $collectionContainer.scrollWidth
 }
 
 const updateCountUp = (count) => {
@@ -176,36 +136,25 @@ window.addEventListener('keypress', ev => {
 
   console.log(ev.key)
 
-  $key.classList.remove('debug');
-  if (ev.key === '`') {
-    $key.innerHTML = EMOJI.join(' ');
-    $key.classList.add('debug');
+  if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
+    let emoji = genRandomElement(EMOJI);
 
-    isBusy = false;
+    $key.innerHTML = `<img src="image/${emoji}.png" />`;
+    $key.classList.add('shake');
+
+    setTimeout(() => {
+      targetKey = getNextChar(CHARS);
+      correctCount++;
+
+      showChar(targetKey);
+      updateCountUp(correctCount);
+
+      isBusy = false;
+
+    }, 3000);
 
   } else {
-    if (ev.key && ev.key.toLowerCase() == targetKey.toLowerCase()) {
-      let emoji = genRandomChar(EMOJI);
-
-      $key.innerHTML = emoji;
-      $key.classList.add('shake');
-
-      setTimeout(() => {
-        targetKey = getNextChar(CHARS);
-        correctCount++;
-
-        showChar(targetKey);
-        addToCollection(emoji);
-        scrollCollection();
-        updateCountUp(correctCount);
-
-        isBusy = false;
-
-      }, 3000);
-
-    } else {
-      isBusy = false;
-    }
+    isBusy = false;
   }
 });
 
